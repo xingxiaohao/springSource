@@ -212,6 +212,13 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
 	 * @see #loadBeanDefinitions(org.springframework.core.io.Resource)
 	 * @see #loadBeanDefinitions(org.springframework.core.io.Resource[])
 	 */
+	/**
+	 * 主要调用方法
+	 * @param location
+	 * @param actualResources
+	 * @return
+	 * @throws BeanDefinitionStoreException
+	 */
 	public int loadBeanDefinitions(String location, @Nullable Set<Resource> actualResources) throws BeanDefinitionStoreException {
 		//此处获取resourceLoader对象
 		ResourceLoader resourceLoader = getResourceLoader();

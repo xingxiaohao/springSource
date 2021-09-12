@@ -93,7 +93,10 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	@Override
 	public void registerBeanDefinitions(Document doc, XmlReaderContext readerContext) {
 		this.readerContext = readerContext;
-		doRegisterBeanDefinitions(doc.getDocumentElement());
+		//获得Document根元素
+		Element documentElement = doc.getDocumentElement();
+		//调用
+		doRegisterBeanDefinitions(documentElement);
 	}
 
 	/**
@@ -125,6 +128,8 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		// the new (child) delegate with a reference to the parent for fallback purposes,
 		// then ultimately reset this.delegate back to its original (parent) reference.
 		// this behavior emulates a stack of delegates without actually necessitating one.
+		//具体解析过程由BeanDefinitionParserDelegate 实现
+		//BeanDefinitionParserDelegate定义了spring bean定义xml文件的各种元素
 		BeanDefinitionParserDelegate parent = this.delegate;
 		this.delegate = createDelegate(getReaderContext(), root, parent);
 
@@ -144,14 +149,16 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 				}
 			}
 		}
-
+		//自定义解析，增强可拓展性
 		preProcessXml(root);
+		//从根元素开始进行bean定义的文档对象的解析
 		parseBeanDefinitions(root, this.delegate);
+		//自定义解析，增加可拓展性
 		postProcessXml(root);
 
 		this.delegate = parent;
 	}
-
+	//创建解析对象完成解析
 	protected BeanDefinitionParserDelegate createDelegate(
 			XmlReaderContext readerContext, Element root, @Nullable BeanDefinitionParserDelegate parentDelegate) {
 
@@ -165,8 +172,10 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	 * "import", "alias", "bean".
 	 * @param root the DOM root element of the document
 	 */
+	//使用spring的bean规则从文档根元素开始bean定义的文档对象解析
 	protected void parseBeanDefinitions(Element root, BeanDefinitionParserDelegate delegate) {
 		if (delegate.isDefaultNamespace(root)) {
+			//获取bean定义文档对象根元素的子节点
 			NodeList nl = root.getChildNodes();
 			for (int i = 0; i < nl.getLength(); i++) {
 				Node node = nl.item(i);
